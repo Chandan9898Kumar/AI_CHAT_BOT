@@ -1,0 +1,578 @@
+/* ImageClassifier Container */
+.ImageClassifier {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  color: #e5e7eb;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Animation */
+.ImageClassifier::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(96, 165, 250, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
+  animation: float 6s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Main Content */
+.ImageClassifier > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* File Input Styling - Make it visible and beautiful */
+input[type="file"] {
+  width: 100% !important;
+  padding: 1.5rem !important;
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9)) !important;
+  border: 2px dashed #60a5fa !important;
+  border-radius: 1.5rem !important;
+  color: #e5e7eb !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  text-align: center !important;
+  margin-bottom: 2rem !important;
+}
+
+/* Custom File Upload Button */
+input[type="file"] + * {
+  position: relative;
+}
+
+input[type="file"] ~ * {
+  margin-top: 2rem;
+}
+
+/* Create a custom upload area */
+.ImageClassifier > div {
+  background: rgba(31, 41, 55, 0.8);
+  border: 2px dashed #374151;
+  border-radius: 2rem;
+  padding: 3rem;
+  text-align: center;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  max-width: 600px;
+  width: 100%;
+}
+
+.ImageClassifier > div:hover {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(96, 165, 250, 0.2);
+}
+
+/* File Input Label */
+.ImageClassifier input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  border: none;
+  border-radius: 1rem;
+  color: white;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.ImageClassifier input[type="file"]:hover {
+  border-color: #a78bfa !important;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(167, 139, 250, 0.1)) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 15px 40px rgba(96, 165, 250, 0.2) !important;
+}
+
+input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6) !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  color: white !important;
+  padding: 1rem 2rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  margin-right: 1rem !important;
+  font-size: 1rem !important;
+  box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3) !important;
+}
+
+input[type="file"]::file-selector-button:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4) !important;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+}
+
+/* Image Preview */
+img {
+  max-width: 500px !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 2rem !important;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 3px rgba(96, 165, 250, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  margin: 2rem auto !important;
+  display: block !important;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.8)) !important;
+  padding: 1rem !important;
+  backdrop-filter: blur(20px) !important;
+  animation: imageAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+img:hover {
+  transform: scale(1.03) rotate(0.5deg) !important;
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.6),
+    0 0 0 4px rgba(96, 165, 250, 0.5),
+    0 0 30px rgba(96, 165, 250, 0.3) !important;
+}
+
+@keyframes imageAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Prediction Results Container */
+.prediction-result {
+  background: linear-gradient(135deg, 
+    rgba(31, 41, 55, 0.95) 0%, 
+    rgba(17, 24, 39, 0.95) 50%, 
+    rgba(31, 41, 55, 0.95) 100%);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 2.5rem;
+  padding: 3rem 2.5rem;
+  margin: 3rem auto;
+  backdrop-filter: blur(30px);
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(96, 165, 250, 0.3),
+    0 0 50px rgba(96, 165, 250, 0.1),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 650px;
+  width: 100%;
+  animation: resultAppear 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.prediction-result::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    rgba(96, 165, 250, 0.1) 0%, 
+    transparent 25%, 
+    transparent 75%, 
+    rgba(167, 139, 250, 0.1) 100%);
+  animation: gradientShift 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+.ImageClassifier div:last-child::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(45deg, 
+    rgba(96, 165, 250, 0.1) 0%, 
+    transparent 25%, 
+    transparent 75%, 
+    rgba(167, 139, 250, 0.1) 100%) !important;
+  animation: gradientShift 3s ease-in-out infinite !important;
+  z-index: -1 !important;
+}
+
+@keyframes resultAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.8) rotateX(20deg);
+  }
+  30% {
+    opacity: 0.7;
+    transform: translateY(20px) scale(0.95) rotateX(10deg);
+  }
+  70% {
+    transform: translateY(-8px) scale(1.05) rotateX(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Prediction Title */
+.prediction-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 2.5rem;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  animation: titleGlow 3s ease-in-out infinite;
+  position: relative;
+  letter-spacing: 1px;
+  filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.4));
+}
+
+.ImageClassifier h3::after {
+  content: '✨' !important;
+  position: absolute !important;
+  right: -2rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 1.2rem !important;
+  animation: sparkle 1.5s ease-in-out infinite !important;
+}
+
+@keyframes titleGlow {
+  0% { 
+    background-position: 0% 50%; 
+    transform: translateY(0px);
+  }
+  50% { 
+    background-position: 100% 50%; 
+    transform: translateY(-2px);
+  }
+  100% { 
+    background-position: 0% 50%; 
+    transform: translateY(0px);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.5; transform: translateY(-50%) scale(1); }
+  50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+}
+
+/* Prediction Content Container */
+.prediction-content {
+  background: linear-gradient(135deg, 
+    rgba(96, 165, 250, 0.15) 0%, 
+    rgba(167, 139, 250, 0.15) 50%,
+    rgba(244, 114, 182, 0.15) 100%);
+  border-radius: 2rem;
+  border: 2px solid rgba(96, 165, 250, 0.3);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* Prediction Label */
+.prediction-label {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(96, 165, 250, 0.4);
+  animation: labelGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes labelGlow {
+  0% { 
+    transform: scale(1);
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(96, 165, 250, 0.4);
+  }
+  100% { 
+    transform: scale(1.02);
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(96, 165, 250, 0.6);
+  }
+}
+
+/* Confidence Section */
+.confidence-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.confidence-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Confidence Bar */
+.confidence-bar {
+  width: 100%;
+  height: 16px;
+  background: rgba(55, 65, 81, 0.8);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    #60a5fa 0%, 
+    #a78bfa 50%, 
+    #f472b6 100%);
+  border-radius: 8px;
+  transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(96, 165, 250, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: confidencePulse 2s ease-in-out infinite;
+}
+
+.confidence-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes confidencePulse {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(96, 165, 250, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(96, 165, 250, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Confidence Percentage */
+.confidence-percentage {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #60a5fa;
+  text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+  animation: percentageBounce 2s ease-in-out infinite;
+}
+
+@keyframes percentageBounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-4px); }
+  60% { transform: translateY(-2px); }
+}
+
+
+
+.ImageClassifier p::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent) !important;
+  animation: shimmer 3s infinite !important;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-8px); }
+  60% { transform: translateY(-4px); }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Confidence Badge */
+.ImageClassifier p:has-text {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+}
+
+/* Add a confidence meter visual */
+.ImageClassifier div:last-child::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 1rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 80% !important;
+  height: 4px !important;
+  background: rgba(55, 65, 81, 0.5) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+}
+
+/* Hover effect for prediction result */
+.prediction-result:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 2px rgba(96, 165, 250, 0.6),
+    0 0 60px rgba(96, 165, 250, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.prediction-result:hover .confidence-fill {
+  animation: confidencePulse 1s ease-in-out infinite;
+}
+
+.prediction-result:hover .prediction-label {
+  animation: labelGlow 1s ease-in-out infinite alternate;
+}
+
+/* Loading State */
+.ImageClassifier.loading::after {
+  content: 'Analyzing image...' !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: rgba(31, 41, 55, 0.95) !important;
+  color: #60a5fa !important;
+  padding: 1rem 2rem !important;
+  border-radius: 1rem !important;
+  font-weight: 600 !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid #60a5fa !important;
+  animation: pulse 1.5s infinite !important;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ImageClassifier {
+    padding: 1rem;
+  }
+  
+  .ImageClassifier > div {
+    padding: 2rem 1rem;
+    margin: 1rem 0;
+  }
+  
+  .ImageClassifier div:last-child {
+    padding: 2rem 1.5rem !important;
+    margin-top: 1.5rem !important;
+  }
+  
+  img {
+    max-width: 300px !important;
+  }
+  
+  .ImageClassifier h3 {
+    font-size: 1.4rem !important;
+  }
+  
+  .ImageClassifier h3::after {
+    right: -1.5rem !important;
+    font-size: 1rem !important;
+  }
+  
+  .ImageClassifier p {
+    font-size: 1.1rem !important;
+    padding: 1.25rem 1.5rem !important;
+  }
+  
+  .ImageClassifier p::before {
+    font-size: 1.5rem !important;
+    margin-right: 0.5rem !important;
+  }
+}
+
+/* Hover Effects for Interactive Elements */
+.ImageClassifier > div:first-child {
+  cursor: pointer;
+  position: relative;
+}
+
+.ImageClassifier > div:first-child::before {
+  content: '📁 Click to upload an image';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.ImageClassifier > div:first-child:hover::before {
+  color: #60a5fa;
+}
