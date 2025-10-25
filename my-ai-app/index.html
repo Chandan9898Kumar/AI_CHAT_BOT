@@ -1,13 +1,159 @@
 <!doctype html>
+<!-- Declares HTML5 document type for modern browser compatibility -->
 <html lang="en">
+<!-- Sets document language to English for search engines and screen readers -->
   <head>
+    <!-- Basic Meta Tags: Essential for proper rendering and compatibility -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Sets character encoding to UTF-8 for international character support -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>my-ai-app</title>
+    <!-- Makes website responsive on mobile devices by controlling viewport scaling -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Forces Internet Explorer to use latest rendering engine -->
+    
+    <!-- Primary Meta Tags: Core SEO elements that appear in search results -->
+    <title>AI Assistant - Chat & Image Generation | Powered by Groq & Hugging Face</title>
+    <!-- Page title (60 chars max) - appears in browser tab and search results -->
+    <meta name="title" content="AI Assistant - Chat & Image Generation | Powered by Groq & Hugging Face" />
+    <!-- Backup title tag for some social media platforms -->
+    <meta name="description" content="Advanced AI Assistant with real-time chat and image generation. Powered by Groq's lightning-fast LLM and Hugging Face FLUX model. Create images and get intelligent responses instantly." />
+    <!-- Meta description (155 chars max) - appears under title in search results, crucial for click-through rates -->
+    <meta name="keywords" content="AI assistant, chat bot, image generation, artificial intelligence, Groq, Hugging Face, FLUX, AI chat, text to image, machine learning, conversational AI" />
+    <!-- Keywords help search engines understand page content (less important now but still useful) -->
+    <meta name="author" content="AI Assistant Team" />
+    <!-- Identifies content creator for attribution and credibility -->
+    <meta name="robots" content="index, follow" />
+    <!-- Tells search engine bots to index this page and follow links (improves SEO ranking) -->
+    <meta name="language" content="English" />
+    <!-- Specifies content language for better search engine categorization -->
+    
+    <!-- Open Graph / Facebook: Controls how content appears when shared on Facebook, LinkedIn, WhatsApp -->
+    <meta property="og:type" content="website" />
+    <!-- Tells social platforms this is a website (not article, video, etc.) -->
+    <meta property="og:url" content="https://ai-assistant.com/" />
+    <!-- Canonical URL for social sharing - prevents duplicate content issues -->
+    <meta property="og:title" content="AI Assistant - Chat & Image Generation" />
+    <!-- Title shown in social media previews (can be different from page title) -->
+    <meta property="og:description" content="Advanced AI Assistant with real-time chat and image generation. Powered by Groq's lightning-fast LLM and Hugging Face FLUX model." />
+    <!-- Description shown in social media previews - should be compelling to increase clicks -->
+    <meta property="og:image" content="/og-image.jpg" />
+    <!-- Image shown in social previews (1200x630px recommended) - dramatically increases engagement -->
+    <meta property="og:site_name" content="AI Assistant" />
+    <!-- Website name shown above title in social previews - builds brand recognition -->
+    <meta property="og:locale" content="en_US" />
+    <!-- Specifies language and region for better social media targeting -->
+    
+    <!-- Twitter Cards: Controls appearance when shared on Twitter/X platform -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <!-- Creates large image card format - gets 2x more engagement than summary cards -->
+    <meta property="twitter:url" content="https://ai-assistant.com/" />
+    <!-- Canonical URL for Twitter sharing - ensures consistent link tracking -->
+    <meta property="twitter:title" content="AI Assistant - Chat & Image Generation" />
+    <!-- Title displayed in Twitter card - should be concise and compelling -->
+    <meta property="twitter:description" content="Advanced AI Assistant with real-time chat and image generation. Create images and get intelligent responses instantly." />
+    <!-- Description in Twitter card - shorter than OG description for better mobile display -->
+    <meta property="twitter:image" content="/twitter-image.jpg" />
+    <!-- Image for Twitter card (1200x600px recommended) - crucial for engagement -->
+    
+    <!-- Favicon and Icons: Brand identity across all devices and platforms -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Modern SVG favicon - scalable and crisp on all displays -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <!-- Standard favicon for desktop browsers - appears in browser tabs -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <!-- Small favicon for bookmarks and browser UI elements -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <!-- iOS home screen icon - appears when users add site to home screen -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- PWA manifest file - enables app-like installation on mobile devices -->
+    
+    <!-- Theme and App Meta: Controls app appearance and mobile experience -->
+    <meta name="theme-color" content="#0f0f23" />
+    <!-- Sets browser UI color on mobile - matches app's dark theme for seamless experience -->
+    <meta name="msapplication-TileColor" content="#0f0f23" />
+    <!-- Windows tile color when pinned to start menu - maintains brand consistency -->
+    <meta name="application-name" content="AI Assistant" />
+    <!-- App name for Windows and some browsers - used in taskbar and shortcuts -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Enables full-screen mode on iOS when added to home screen - removes browser UI -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Makes iOS status bar transparent with white text - matches dark theme -->
+    <meta name="apple-mobile-web-app-title" content="AI Assistant" />
+    <!-- Title shown under iOS home screen icon - should be short (12 chars max) -->
+    
+    <!-- Performance and Security: Optimizes loading speed and protects user privacy -->
+    <meta name="referrer" content="origin-when-cross-origin" />
+    <!-- Controls referrer information sent to external sites - balances analytics with privacy -->
+    <link rel="preconnect" href="https://api.groq.com" />
+    <!-- Establishes early connection to Groq API - reduces latency by ~100-500ms on first request -->
+    <link rel="preconnect" href="https://api-inference.huggingface.co" />
+    <!-- Pre-connects to Hugging Face API - speeds up image generation requests -->
+    <link rel="dns-prefetch" href="https://api.groq.com" />
+    <!-- Resolves DNS for Groq API in background - saves ~20-120ms on first API call -->
+    <link rel="dns-prefetch" href="https://api-inference.huggingface.co" />
+    <!-- Pre-resolves Hugging Face DNS - improves image generation response time -->
+    
+    <!-- Structured Data (JSON-LD): Helps search engines understand your app for rich snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      <!-- Schema.org vocabulary - Google's preferred structured data format -->
+      "@type": "WebApplication",
+      <!-- Tells search engines this is a web application, not just a website -->
+      "name": "AI Assistant",
+      <!-- App name for search engines and potential rich snippets -->
+      "description": "Advanced AI Assistant with real-time chat and image generation capabilities",
+      <!-- Detailed description for search engines to understand functionality -->
+      "url": "https://ai-assistant.com",
+      <!-- Canonical URL helps prevent duplicate content issues -->
+      "applicationCategory": "Productivity",
+      <!-- Category helps users find your app in relevant searches -->
+      "operatingSystem": "Web Browser",
+      <!-- Specifies platform compatibility for app stores and search results -->
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+        <!-- Indicates free app - can appear in price comparison results -->
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "AI Assistant Team"
+        <!-- Creator information builds trust and authority -->
+      },
+      "featureList": [
+        "Real-time AI chat conversations",
+        "AI-powered image generation",
+        "Modern responsive interface",
+        "Copy and share responses",
+        "Dark theme design"
+        <!-- Feature list can appear in search results and helps with keyword relevance -->
+      ]
+    }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Main App Container: Where React application mounts -->
+    <div id="root" role="main" aria-label="AI Assistant Application"></div>
+    <!-- role="main" tells screen readers this is the primary content area -->
+    <!-- aria-label provides accessible description for assistive technologies -->
+    
+    <!-- Module Script: Loads React application with modern ES6 modules -->
     <script type="module" src="/src/main.tsx"></script>
+    <!-- type="module" enables modern JavaScript features and tree-shaking -->
+    
+    <!-- Fallback for No-JS Users: Graceful degradation for accessibility -->
+    <noscript>
+      <!-- Shows when JavaScript is disabled - improves accessibility and SEO -->
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1>AI Assistant</h1>
+        <!-- H1 tag maintains SEO value even without JavaScript -->
+        <p>This application requires JavaScript to function properly.</p>
+        <!-- Clear message explains technical requirements -->
+        <p>Please enable JavaScript in your browser and refresh the page.</p>
+        <!-- Actionable instruction helps users resolve the issue -->
+      </div>
+    </noscript>
   </body>
 </html>
+<!-- End of document: All SEO elements now optimized for maximum search visibility and user experience -->
