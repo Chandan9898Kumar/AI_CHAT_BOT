@@ -11,6 +11,7 @@ interface Message {
   imageUrl?: string;
 }
 
+// ✅ GOOD: Function created once, reused forever
 async function generateImage(prompt: string) {
   const response = await fetch("http://localhost:3001/api/generate-image", {
     method: "POST",
@@ -29,6 +30,7 @@ async function generateImage(prompt: string) {
   return data.imageUrl;
 }
 
+// ✅ GOOD: Function created once, reused forever,Same reference across all renders, No unnecessary re-renders. and Better memory efficiency.
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
