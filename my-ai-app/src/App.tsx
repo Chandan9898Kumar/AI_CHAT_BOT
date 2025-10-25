@@ -35,6 +35,15 @@ const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
 
+// ✅ OPTIMAL: Event delegation approach
+const handleMessageAction = (event: React.MouseEvent) => {
+  const button = event.target as HTMLButtonElement;
+  const text = button.dataset.text;
+  if (button.classList.contains("copy-btn") && text) {
+    copyToClipboard(text);
+  }
+};
+
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -135,7 +144,7 @@ function App() {
         {messages.length === 0 ? (
           <Message />
         ) : (
-          <div className="messages-container">
+          <div className="messages-container" onClick={handleMessageAction}>
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -157,7 +166,7 @@ function App() {
                     {!message.isUser && (
                       <button
                         className="copy-btn"
-                        onClick={() => copyToClipboard(message.text)}
+                        data-text={message.text}
                         title="Copy message"
                       >
                         📋
