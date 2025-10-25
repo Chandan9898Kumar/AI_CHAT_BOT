@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
-
+import Loader from "./components/Loader";
+import Message from "./components/Message";
+import Header from "./components/Header";
 interface Message {
   id: string;
   text: string;
@@ -27,14 +29,14 @@ async function generateImage(prompt: string) {
   return data.imageUrl;
 }
 
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+};
+
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -122,22 +124,14 @@ function App() {
     setLoading(false);
   };
 
+  console.log(messages);
   return (
     <div className="app">
-      <div className="sidebar">
-        <div className="logo">
-          <h2>AI Assistant</h2>
-        </div>
-      </div>
+      <Header />
 
       <div className="main-content">
         {messages.length === 0 ? (
-          <div className="welcome-screen">
-            <div className="welcome-content">
-              <h1>What can I help you with?</h1>
-              <p>Ask me anything and I'll do my best to help you.</p>
-            </div>
-          </div>
+          <Message />
         ) : (
           <div className="messages-container">
             {messages.map((message) => (
@@ -172,20 +166,7 @@ function App() {
                 </div>
               </div>
             ))}
-            {loading && (
-              <div className="message-wrapper ai-wrapper">
-                <div className="message-content">
-                  <div className="ai-avatar">🤖</div>
-                  <div className="message-bubble loading">
-                    <div className="typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {loading && <Loader />}
           </div>
         )}
 
