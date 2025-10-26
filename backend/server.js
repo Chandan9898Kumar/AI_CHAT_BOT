@@ -132,10 +132,10 @@ app.post("/api/chat", async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
-          messages: [{ role: "user", content: message }],
-          temperature: 0.1,
-          max_tokens: 1000,
+          model: "llama-3.1-8b-instant", // model = Which AI brain to use. ← This is Meta's Llama model!
+          messages: [{ role: "user", content: message }], // messages = Your question
+          temperature: 0.1, // temperature = How creative to be
+          max_tokens: 1000, // max_tokens = Maximum response length
         }),
       }
     );
