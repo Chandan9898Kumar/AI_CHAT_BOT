@@ -90,7 +90,8 @@ const groqAgent = createAgent({
 app.use(cors());
 app.use(express.json());
 
-// Here we are doing Direct Groq API Call (/api/chat)
+// Here we are doing Direct Groq API Call (/api/chat). This api is only for only for text/chat. if you ask for image then it won't show.
+// For image we have to use diffrent endpoint or model from groq website.
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;

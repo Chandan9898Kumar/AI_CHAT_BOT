@@ -664,8 +664,7 @@ app.post("/api/chat", async (req, res) => {
     // Why it works: Groq provides a REST API endpoint that accepts HTTP requests
     // No setup needed: Just need internet connection + API key
 
-    const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions",
       {
         method: "POST", // Sending data to server
         headers: {
@@ -680,9 +679,13 @@ app.post("/api/chat", async (req, res) => {
         }),
       }
     );
-
-
 });
+
+`Breaking it down:`
+
+1. api.groq.com = Groq's API server
+2. /openai/v1/ = OpenAI-compatible format
+3. /chat/completions = Standard chat endpoint . (only for text/chat)
 ```
 
 ### 🧠 The Real Story: Who Makes What?
@@ -771,7 +774,7 @@ Llama's response → Groq formats it → Sends back to you
 . So the actual "thinking" is done by Meta's Llama model, but Groq makes it lightning fast! ⚡
 ```
 
-### Imporatant : EndPoint : "/api/chat-enhanced"
+### LangChain Agent : EndPoint : "/api/chat-enhanced"
 
 So, Here if you notice. We are not directly calling any groq api directly.
 
@@ -925,6 +928,95 @@ const groqAgent = createAgent({
 
 ```
 
+> Important :
+> If you see, LangChain does internally call this api.
+
+```js
+"https://api.groq.com/openai/v1/chat/completions";
+```
+
+It could have called other api but why this api only and how did it find this api/ how ChatGroq selects the specific endpoint. ?
+
+> Solution :
+
+🎯 How ChatGroq Selects the Right Endpoint.
+
+1. Groq Has Multiple APIs
+
+```js
+// Groq's different endpoints:
+"https://api.groq.com/openai/v1/chat/completions"; // ← Text chat
+"https://api.groq.com/openai/v1/audio/speech"; // ← Text-to-speech
+"https://api.groq.com/openai/v1/audio/transcriptions"; // ← Speech-to-text
+"https://api.groq.com/openai/v1/embeddings"; // ← Text embeddings
+"https://api.groq.com/openai/v1/images/generations"; // ← Image generation (if available)
+```
+
+2. `ChatGroq` is Purpose-Built for Chat Only
+
+```js
+// Inside ChatGroq class - Line 647:
+async completionWithRetry(request, options) {
+  return this.caller.call(async () =>
+    this.client.chat.completions.create(request, options) // ← HARDCODED to chat.completions
+  );
+}
+
+```
+
+3. The Selection Logic
+
+```js
+// ChatGroq ONLY knows about chat:
+class ChatGroq {
+  async _generateNonStreaming(messages, options) {
+    const data = await this.completionWithRetry({
+      ...params,
+      messages: messagesMapped, // ← Always calls chat.completions.create()
+    });
+  }
+}
+
+// This translates to:
+this.client.chat.completions.create();
+// ↓
+("https://api.groq.com/openai/v1/chat/completions");
+```
+
+4. Different LangChain Classes for Different Endpoints.
+
+```js
+// LangChain has separate classes for each capability:
+
+import { ChatGroq } from "@langchain/groq"; // → /chat/completions
+// (Hypothetical - if they existed):
+import { AudioGroq } from "@langchain/groq"; // → /audio/speech
+import { EmbeddingsGroq } from "@langchain/groq"; // → /embeddings
+```
+
+5. Why It Chose /chat/completions
+
+```js
+// When you create ChatGroq:
+model: new ChatGroq({...})
+
+// You're specifically choosing the CHAT class
+// ChatGroq = Chat functionality ONLY
+// It's hardcoded to only use /chat/completions endpoint
+
+```
+
+🎯 Final Answer
+
+> ChatGroq doesn't "select" the endpoint - it's hardcoded to only use /chat/completions!
+
+1. ChatGroq = Chat only → /chat/completions
+2. AudioGroq (if it existed) = Audio only → /audio/speech
+3. EmbeddingsGroq (if it existed) = Embeddings only → /embeddings
+   `Each LangChain class is purpose-built for ONE specific API endpoint! 🚀`
+
+> If you wanted audio, you'd need a different class or direct API calls to /audio/speech.
+
 ### 🤗 What is Hugging Face?
 
 Hugging Face is like GitHub for AI models - it's a platform where people share AI models for free!
@@ -967,7 +1059,7 @@ What we're Using:
 
 `Breaking this down:`
 
-1. `api-inference.huggingface.co` = Hugging Face's API service 
+1. `api-inference.huggingface.co` = Hugging Face's API service
 2. `models/` = Access to model repository
 3. `black-forest-labs/` = Company that created the model
 4. `FLUX.1-dev` = Specific image generation model
