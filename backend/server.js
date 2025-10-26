@@ -22,7 +22,7 @@ const weatherTool = tool(
         throw new Error(response.message || "Something went wrong.");
       }
       const data = await response.json();
-      console.log(data, "data wather api");
+      
       return `Weather in ${city}: ${data.weather[0].description}, ${Math.round(
         data.main.temp - 273.15
       )}°C`;
@@ -69,6 +69,16 @@ const groqAgent = createAgent({
   model: new ChatGroq({
     apiKey: process.env.GROQ_API_KEY,
     model: "llama-3.1-8b-instant",
+    callbacks: [
+      {
+        handleLLMStart: (llm, prompts) => {
+          console.log(llm,"🚀 LangChain calling Groq API with:", prompts);
+        },
+        handleLLMEnd: (output) => {
+          console.log("✅ Groq API responded with:", output);
+        },
+      },
+    ],
     // temperature: 0, // More deterministic
   }),
   tools: [weatherTool, calculatorTool, searchTool],
@@ -164,6 +174,8 @@ app.post("/api/chat", async (req, res) => {
 // Agent thinks: "I need the weather tool for this"
 // Calls weatherTool: Fetches real weather data
 // Agent responds: "Tokyo weather: sunny, 22°C"
+
+// NOTE: Here we are not calling direct api. You don't see the fetch() calls because LangChain handles them internally through the ChatGroq class!
 app.post("/api/chat-enhanced", async (req, res) => {
   try {
     const { message } = req.body;
