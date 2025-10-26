@@ -3,27 +3,84 @@ import cors from "cors";
 import dotenv from "dotenv";
 import * as z from "zod";
 import { createAgent, tool } from "langchain";
+import { ChatGroq } from "@langchain/groq";
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const getWeather = tool(({ city }) => `It's always sunny in ${city}!`, {
-  name: "get_weather",
-  description: "Get the weather for a given city",
-  schema: z.object({
-    city: z.string(),
-  }),
-});
+// Create tools
+const weatherTool = tool(
+  async ({ city }) => {
+    // Real weather API call
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.WEATHER_API_KEY}`
+      );
 
-const agent = createAgent({
-  model: "anthropic:claude-3-5-sonnet-20241022",
-  tools: [getWeather],
+      if (response.status !== 200) {
+        throw new Error(response.message || "Something went wrong.");
+      }
+      const data = await response.json();
+      console.log(data, "data wather api");
+      return `Weather in ${city}: ${data.weather[0].description}, ${Math.round(
+        data.main.temp - 273.15
+      )}°C`;
+    } catch (error) {
+      return error;
+    }
+  },
+  {
+    name: "get_weather",
+    description: "Get real weather for any city",
+    schema: z.object({ city: z.string() }),
+  }
+);
+
+const calculatorTool = tool(
+  ({ expression }) => {
+    try {
+      return `Result: ${eval(expression)}`; // ← This line does the actual calculation. eval() executes the math
+    } catch {
+      return "Invalid calculation";
+    }
+  },
+  {
+    name: "calculator",
+    description: "Calculate math expressions",
+    schema: z.object({ expression: z.string() }),
+  }
+);
+
+const searchTool = tool(
+  async ({ query }) => {
+    // Mock search - replace with real search API
+    return `Search results for "${query}": Found relevant information about ${query}`;
+  },
+  {
+    name: "web_search",
+    description: "Search the web for information",
+    schema: z.object({ query: z.string() }),
+  }
+);
+
+// Create Groq-powered agent using langchain.
+const groqAgent = createAgent({
+  model: new ChatGroq({
+    apiKey: process.env.GROQ_API_KEY,
+    model: "llama-3.1-8b-instant",
+    // temperature: 0, // More deterministic
+  }),
+  tools: [weatherTool, calculatorTool, searchTool],
+  maxIterations: 1, // Limit tool call iterations. Limit Tool Calls
+  systemMessage:
+    "You are a helpful assistant. Use tools only when necessary and trust their results. Don't call multiple tools for simple requests.",
 });
 
 app.use(cors());
 app.use(express.json());
 
+// Here we are doing Direct Groq API Call (/api/chat)
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -101,6 +158,57 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// Enhanced chat with tools :LangChain Agent. For example :
+// What happens:
+// User asks: "Weather in Tokyo?"
+// Agent thinks: "I need the weather tool for this"
+// Calls weatherTool: Fetches real weather data
+// Agent responds: "Tokyo weather: sunny, 22°C"
+app.post("/api/chat-enhanced", async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    const result = await groqAgent.invoke({
+      messages: [{ role: "user", content: message }],
+    });
+
+    // Extract tool results
+    const toolMessages = result.messages.filter(
+      (msg) => msg.constructor.name === "ToolMessage"
+    );
+
+    // If we have tool results, use them directly
+    let finalResponse = result.messages[result.messages.length - 1].content;
+
+    if (toolMessages.length > 0) {
+      // Use the actual tool result instead of agent's response
+      finalResponse = toolMessages.map((msg) => msg.content).join(". ");
+    }
+
+    const toolsUsed = [];
+    result.messages.forEach((msg) => {
+      if (msg.tool_calls && msg.tool_calls.length > 0) {
+        msg.tool_calls.forEach((toolCall) => {
+          toolsUsed.push(toolCall.name);
+        });
+      }
+    });
+
+    res.json({
+      response: finalResponse, // Use tool result directly
+      tools_used: Array.from(new Set(toolsUsed)),
+      tool_results: toolMessages.map((msg) => ({
+        tool_name: msg.name,
+        content: msg.content,
+        id: msg.id,
+      })),
+    });
+  } catch (error) {
+    console.error("Enhanced chat error:", error);
+    res.json({ response: "Error occurred" });
+  }
+});
+
 app.post("/api/generate-image", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -141,25 +249,6 @@ app.post("/api/generate-image", async (req, res) => {
     res.json({ imageUrl });
   } catch (error) {
     res.json({ error: error.message || "Error generating image" });
-  }
-});
-
-app.post("/api/agent", async (req, res) => {
-  try {
-    const { message } = req.body;
-
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return res.json({ response: "Anthropic API key required" });
-    }
-
-    const result = await agent.invoke({
-      messages: [{ role: "user", content: message }],
-    });
-
-    res.json({ response: result.messages[result.messages.length - 1].content });
-  } catch (error) {
-    console.error("Agent error:", error);
-    res.status(500).json({ error: "Agent error" });
   }
 });
 

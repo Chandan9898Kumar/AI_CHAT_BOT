@@ -28,6 +28,13 @@ function Navbar() {
             Chat Bot
           </Link>
           <Link 
+            to="/agent" 
+            className={`nav-link ${location.pathname === '/agent' ? 'active' : ''}`}
+          >
+            <span className="nav-icon">🤖</span>
+            AI Agent
+          </Link>
+          <Link 
             to="/classifier" 
             className={`nav-link ${location.pathname === '/classifier' ? 'active' : ''}`}
           >
