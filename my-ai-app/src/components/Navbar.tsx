@@ -41,6 +41,13 @@ function Navbar() {
             <span className="nav-icon">🖼️</span>
             Image Classifier
           </Link>
+          <Link 
+            to="/tts" 
+            className={`nav-link ${location.pathname === '/tts' ? 'active' : ''}`}
+          >
+            <span className="nav-icon">🔊</span>
+            Text to Speech
+          </Link>
         </div>
       </div>
     </nav>

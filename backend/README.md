@@ -210,7 +210,7 @@ const searchTool = tool(
 
 ### 🤖 LangChain Agent Creation.
 
-1. const groqAgent = createAgent({})
+1. `const groqAgent = createAgent({})`
 
 ```js
 const groqAgent = createAgent({})
@@ -222,7 +222,7 @@ const groqAgent = createAgent({})
 3. How it works: Returns an agent object that can process messages and decide which tools to use
 ```
 
-2. model: new ChatGroq({})
+2. `model: new ChatGroq({})`
 
 ```js
 model: new ChatGroq({})
@@ -235,7 +235,7 @@ model: new ChatGroq({})
 
 ```
 
-3. apiKey: process.env.GROQ_API_KEY
+3. `apiKey: process.env.GROQ_API_KEY`
 
 ```js
 apiKey: process.env.GROQ_API_KEY
@@ -247,7 +247,7 @@ apiKey: process.env.GROQ_API_KEY
 3. How it works: Reads the API key from environment variables for security
 ```
 
-4. model: "llama-3.1-8b-instant"
+4. `model: "llama-3.1-8b-instant"`
 
 ```js
 model: "llama-3.1-8b-instant"
@@ -259,7 +259,7 @@ model: "llama-3.1-8b-instant"
 3. How it works: Tells Groq which specific model variant to run our requests on
 ```
 
-5.  temperature: 0
+5.  `temperature: 0`
 
 ```js
 temperature: 0
@@ -271,7 +271,7 @@ temperature: 0
 3. How it works: Lower values = more focused, higher values = more creative
 ```
 
-6. tools: [weatherTool, calculatorTool, searchTool],
+6. `tools: [weatherTool, calculatorTool, searchTool],`
 
 ```js
 tools: [weatherTool, calculatorTool, searchTool],
@@ -284,7 +284,7 @@ tools: [weatherTool, calculatorTool, searchTool],
 3. How it works: Agent analyzes user input and decides which tools to call based on descriptions
 ```
 
-7. maxIterations: 1,
+7. `maxIterations: 1,`
 
 ```js
 maxIterations: 1
@@ -311,7 +311,7 @@ maxIterations: 1
 
 ```
 
-8. systemMessage
+`8. systemMessage`
 
 ```js
 systemMessage:'type your message'
@@ -336,6 +336,146 @@ User asks: "What's the weather in Tokyo?"
 6. Tool returns: "Weather in Tokyo: sunny, 25°C"
 7. systemMessage guides: "Trust the tool result"
 8. Agent responds: "The weather in Tokyo is sunny, 25°C"
+
+
+```
+
+### Question: Why do we select specific models and how do we know which model to choose?
+
+## 🎯 Model Selection Strategy
+
+Model selection follows a systematic approach based on **task requirements** and **API endpoints**:
+
+### 1. **Task-Specific API Endpoints**
+
+Each functionality requires a specific API endpoint:
+
+```js
+// Text/Chat Tasks
+Endpoint: "https://api.groq.com/openai/v1/chat/completions"
+Purpose: Text generation, conversations, reasoning
+
+// Audio Tasks
+Endpoint: "https://api.groq.com/openai/v1/audio/speech"
+Purpose: Text-to-speech conversion
+
+Endpoint: "https://api.groq.com/openai/v1/audio/transcriptions"
+Purpose: Speech-to-text conversion
+```
+
+### 2. **Model-Endpoint Compatibility**
+
+Each endpoint only works with compatible models:
+
+```js
+// ✅ CORRECT Combinations
+Chat Endpoint + Chat Model:
+{
+  endpoint: "/chat/completions",
+  model: "llama-3.1-8b-instant"  // ← Chat-optimized model
+}
+
+Audio Endpoint + Audio Model:
+{
+  endpoint: "/audio/speech",
+  model: "playai-tts"  // ← Text-to-speech model
+}
+
+// ❌ INCORRECT Combinations
+Chat Endpoint + Audio Model:
+{
+  endpoint: "/chat/completions",
+  model: "playai-tts"  // ← Won't work! TTS model can't chat
+}
+```
+
+### 3. **Our Implementation Example**
+
+**Current Setup (Text Chat):**
+
+```js
+// We chose chat functionality
+const response = await fetch(
+  "https://api.groq.com/openai/v1/chat/completions", // Chat endpoint
+  {
+    body: JSON.stringify({
+      model: "llama-3.1-8b-instant", // Chat-compatible model
+      messages: [{ role: "user", content: message }],
+    }),
+  }
+);
+```
+
+**If we wanted Text-to-Speech:**
+
+```js
+// Different endpoint + different model
+const response = await fetch(
+  "https://api.groq.com/openai/v1/audio/speech", // Audio endpoint
+  {
+    body: JSON.stringify({
+      model: "playai-tts", // TTS-compatible model
+      input: "Hello, this is text to convert to speech",
+      voice: "alloy",
+    }),
+  }
+);
+```
+
+### 4. **Model Selection Criteria**
+
+| Task Type          | Endpoint                | Recommended Model              | Why This Model?                          |
+| ------------------ | ----------------------- | ------------------------------ | ---------------------------------------- |
+| **Chat/Text**      | `/chat/completions`     | `llama-3.1-8b-instant`         | Fast, good quality, tool-calling support |
+| **Vision**         | `/chat/completions`     | `llama-3.2-11b-vision-preview` | Can process images + text                |
+| **Text-to-Speech** | `/audio/speech`         | `playai-tts`                   | Optimized for natural speech synthesis   |
+| **Speech-to-Text** | `/audio/transcriptions` | `whisper-large-v3`             | High accuracy transcription              |
+
+### 5. **How to Choose the Right Model**
+
+**Step 1:** Identify your task
+
+```js
+"I want to build a chatbot" → Chat task
+"I want to convert text to audio" → Text-to-speech task
+"I want to analyze images" → Vision task
+```
+
+**Step 2:** Find the corresponding endpoint. get it from groq website if using Groq.
+
+```js
+Chat task → "/chat/completions"
+TTS task → "/audio/speech"
+Vision task → "/chat/completions" (with vision model)
+```
+
+**Step 3:** Select compatible model
+
+```js
+Chat endpoint → "llama-3.1-8b-instant"
+TTS endpoint → "playai-tts"
+Vision endpoint → "llama-3.2-11b-vision-preview"
+```
+
+### 6. **Key Principle**
+
+> **Each API endpoint is designed for specific functionality and only accepts models trained for that purpose.**
+
+- **Chat models** understand conversations but can't generate audio
+- **TTS models** generate speech but can't have conversations
+- **Vision models** can see images but may be slower for text-only tasks
+
+**Choose the model that matches your endpoint and performance requirements!** 🚀
+
+### 🎯 The Pattern
+
+```js
+// Each feature needs:
+Feature          → Endpoint                    → Model
+Chat            → /chat/completions          → llama-3.1-8b-instant
+Text-to-Speech  → /audio/speech              → playai-tts
+Speech-to-Text  → /audio/transcriptions      → whisper-large-v3
+Vision          → /chat/completions          → llama-3.2-11b-vision-preview
 
 
 ```

@@ -22,7 +22,7 @@ const weatherTool = tool(
         throw new Error(response.message || "Something went wrong.");
       }
       const data = await response.json();
-      
+
       return `Weather in ${city}: ${data.weather[0].description}, ${Math.round(
         data.main.temp - 273.15
       )}°C`;
@@ -72,7 +72,7 @@ const groqAgent = createAgent({
     callbacks: [
       {
         handleLLMStart: (llm, prompts) => {
-          console.log(llm,"🚀 LangChain calling Groq API with:", prompts);
+          console.log(llm, "🚀 LangChain calling Groq API with:", prompts);
         },
         handleLLMEnd: (output) => {
           console.log("✅ Groq API responded with:", output);
@@ -219,6 +219,57 @@ app.post("/api/chat-enhanced", async (req, res) => {
   } catch (error) {
     console.error("Enhanced chat error:", error);
     res.json({ response: "Error occurred" });
+  }
+});
+
+// Add this to your server.js:
+app.post("/api/text-to-speech", async (req, res) => {
+  try {
+    const { text, voice = "Arista-PlayAI" } = req.body;
+    console.log("TTS Request:", { text, voice });
+
+    if (!text) {
+      return res.json({ error: "Text is required" });
+    }
+
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/audio/speech", // ← TTS endpoint
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "playai-tts", // ← TTS model
+          input: text, // ← Text to convert
+          voice: voice, // ← User-selected PlayAI voice
+        }),
+      }
+    );
+
+    console.log("Groq TTS Response Status:", response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Groq TTS Error:", errorText);
+      return res.json({
+        error: `Groq API Error: ${response.status} - ${errorText}`,
+      });
+    }
+
+    const audioBuffer = await response.arrayBuffer();
+    console.log("Audio buffer size:", audioBuffer.byteLength);
+
+    const base64Audio = Buffer.from(audioBuffer).toString("base64");
+    console.log("Base64 audio length:", base64Audio.length);
+
+    res.json({
+      audioUrl: `data:audio/mp3;base64,${base64Audio}`,
+    });
+  } catch (error) {
+    console.error("TTS Error:", error);
+    res.json({ error: error.message });
   }
 });
 
