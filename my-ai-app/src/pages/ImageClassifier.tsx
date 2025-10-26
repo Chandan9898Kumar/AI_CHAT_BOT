@@ -63,3 +63,32 @@ function ImageClassifier() {
 }
 
 export default ImageClassifier;
+
+/**
+
+NOTE :
+ TensorFlow is a machine learning and deep learning framework developed by Google.
+ TensorFlow is used to build and train models like GPT and Gemini,
+
+
+ Also in our code : we did not train any model 
+  The training is not happening because you are using a pre-trained MobileNet model provided by TensorFlow.js.
+  This model has already been trained on millions of images and knows how to classify them into thousands of categories.
+ 
+  . When we upload an image, our app is just using this trained model to classify the image (called inference or prediction).
+  . Your app does not perform the training process, which requires a lot of data and computational power.
+  . Training means showing many examples to a model and adjusting its internal parameters so it learns to recognize patterns.
+  . Since training is expensive and complex, people often use pre-trained models like MobileNet and apply them directly to new images for instant classification.
+
+
+
+When Do You Train?
+  You train or fine-tune a model if:
+
+  . You want a model to learn new categories or data that the pre-trained model doesn't cover.
+
+  . You want to improve accuracy for a specific task or dataset.
+
+  . This requires labeled data and heavy computation, usually done offline or on powerful servers—not in your React frontend app.
+  
+  */
