@@ -1,11 +1,25 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import * as z from "zod";
+import { createAgent, tool } from "langchain";
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+const getWeather = tool(({ city }) => `It's always sunny in ${city}!`, {
+  name: "get_weather",
+  description: "Get the weather for a given city",
+  schema: z.object({
+    city: z.string(),
+  }),
+});
+
+const agent = createAgent({
+  model: "anthropic:claude-3-5-sonnet-20241022",
+  tools: [getWeather],
+});
 
 app.use(cors());
 app.use(express.json());
@@ -127,6 +141,25 @@ app.post("/api/generate-image", async (req, res) => {
     res.json({ imageUrl });
   } catch (error) {
     res.json({ error: error.message || "Error generating image" });
+  }
+});
+
+app.post("/api/agent", async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.json({ response: "Anthropic API key required" });
+    }
+
+    const result = await agent.invoke({
+      messages: [{ role: "user", content: message }],
+    });
+
+    res.json({ response: result.messages[result.messages.length - 1].content });
+  } catch (error) {
+    console.error("Agent error:", error);
+    res.status(500).json({ error: "Agent error" });
   }
 });
 
