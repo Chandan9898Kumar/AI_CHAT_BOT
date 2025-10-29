@@ -259,7 +259,35 @@ model: "llama-3.1-8b-instant"
 3. How it works: Tells Groq which specific model variant to run our requests on
 ```
 
-5.  `temperature: 0`
+5.  `temperature`
+
+`What temperature means simply:`
+
+1. Low temperature (close to 0): The model picks the most likely next words, giving very predictable, focused, and safe answers.
+
+2. High temperature (near 1 or above): The model allows more randomness and might choose less likely words, creating more diverse, surprising, and creative outputs.
+
+`Why it is used:`
+
+1. To control creativity and variety in the text the LLM generates.
+
+2. At low temperature, responses are very consistent and factual, good for exact or technical tasks.
+
+3. At high temperature, responses become more imaginative, useful for creative writing or brainstorming.
+
+`How it works:`
+
+1. When the model predicts the next word, it calculates probabilities for many possible tokens. Temperature modifies these probabilities before picking the next token:
+
+2. Lower temperature sharpens the probabilities (peaks at the most probable words).
+
+3. Higher temperature flattens the probabilities, giving less likely words a better chance to be chosen.
+
+
+`Example:`
+. If the prompt is: "The cat is on the..."
+. At low temperature, model might always say "mat" (most common).
+. At higher temperature, model might say "roof", "tree", or even "sofa" — more variety, less predictable.
 
 ```js
 temperature: 0
@@ -1335,6 +1363,64 @@ It's a direct API call - just like your /api/chat endpoint, but for images inste
 > Focus: Making AI accessible to everyone
 > Models: Hosts models from thousands of companies/researchers
 > Primary Use: All types of AI (text, images, audio, video)
+
+### What is LLM ?
+
+It is A Large Language Model (LLM) is an advanced type of artificial intelligence designed to understand, process, and generate human language text. LLMs are trained on massive amounts of text data using deep learning techniques.
+
+OR
+
+We can say that it is a type of artificial intelligence that can understand, generate and interact using human language
+
+> It is trained on massive text data like : Books, website, wikipedia etc.
+
+LLM examples:
+
+1. Claude
+2. Chat-GPT
+3. Gemini
+4. Llama
+5. Mistral
+
+### How LLMs works internally
+
+> When a user types a message or question into a system using a Large Language Model (LLM), here is what happens step by step in simple terms:
+
+1. `User Input`: You type your text (like a question or a message) and send it.
+
+2. `Tokenization`: The model breaks your sentence into smaller parts called tokens — these could be whole words or parts of words, depending on the tokenizer.
+
+For this example, it might break the sentence into tokens like:
+
+`["I", "heard", "a", "dog", "bark"]`
+
+Each token is then assigned a unique number called a token ID:
+
+`["I"=1, "heard"=2, "a"=3, "dog"=4, "bark"=5]`
+
+So the sentence becomes a list of IDs: `[1][2][3][4][5]`
+
+3. `Turning Tokens into Numbers ( Vectors )`: Each token ID is converted into a vector — a list of numbers that represents its meaning in a way the model can process.
+
+For example:
+
+`Token "I" → Vector [0.1, 0.3, 0.5, ...]`
+
+`Token "heard" → Vector [0.7, 0.2, 0.9, ...]`
+
+These vectors capture patterns like the meaning and context of the word.
+
+4. `Contextual Understanding`: The model looks at all these token vectors together using `Transformers (attention)` mechanisms. This helps it understand how words relate to each other in the sentence (for example, it knows “dog” relates to “bark” and that “I heard” means someone is listening).
+
+5. `Prediction`: Using what it learned during training, the model predicts the next likely token after the input sentence. It calculates probabilities for possible next tokens (like "bark loudly", "run", or "sleep").
+
+6. `Generating Response`: The model picks the most probable next token and adds it to the output. It repeats this process token by token until it finishes generating a full response.
+
+7. `Output`: The tokens are turned back into words and sentences that you can read, and the response shows on your screen.
+
+8. `Personalization (Optional)`: Some LLMs can remember previous interactions or user preferences to tailor answers better over time.
+
+> In short, after you type, the LLM quickly breaks down your input, understands its meaning, predicts the best reply token by token, and shows you the generated answer almost instantly. This is powered by huge amounts of training data and complex math in the background but happens seamlessly for you.
 
 ## 📝 License
 
