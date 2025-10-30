@@ -1607,11 +1607,18 @@ Why Use LangChain Instead of Calling LLM APIs Directly?
 5. LangChain provides advanced features out of the box, making apps smarter and faster to develop.
 ```
 
+> Note : Langchain provides many built-in tools like: PromptTemplate , OutputParser etc. which helps right code easier. and these tools used to:
+
+1. Build chain.
+2. Work with Prompts, Agents, Memory.
+3. Integrate with various LLMs Like: Openai, Claude, Gemini etc.
+
 ### What is a Chain in LangChain?
 
 A Chain is like a recipe—a fixed set of steps done in order.
 Each step processes data and passes its output to the next step.
 Good for tasks where inputs and outputs flow in a clear, straight path.
+We can say it is a rule based process.
 
 `Exmaple `
 chain might: >
@@ -1631,25 +1638,60 @@ This chain takes a user input, passes it through a language model to summarize t
 ```js
 import "dotenv/config";
 import { OpenAI } from "langchain/llms/openai";
+import { LLMChain } from "langchain/chains";
 import { SimpleSequentialChain } from "langchain/chains";
+// The "SimpleSequentialChain" in LangChain is used when you want to link multiple steps (chains) together where the output of one step is fed directly as the input to the next step, in a simple linear fashion.
 
-async function runChain() {
+async function runSimpleSequentialChain() {
   const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
 
-  // Define two chain steps (prompts)
-  const firstStep = async (input) => model.call(`Summarize this: ${input}`);
+  // Create individual chains with prompts
+  const firstChain = new LLMChain({
+    llm: model,
+    prompt: {
+      inputVariables: ["text"],
+      template: "Summarize this: {text}",
+    },
+  });
 
-  const secondStep = async (input) =>
-    model.call(`Make this summary short: ${input}`);
+  const secondChain = new LLMChain({
+    llm: model,
+    prompt: {
+      inputVariables: ["text"],
+      template: "Make this summary short: {text}",
+    },
+  });
 
-  // Simple chain calls steps one after another
-  const result1 = await firstStep("LangChain helps build AI apps.");
-  const result2 = await secondStep(result1);
+  // Link chains sequentially
+  const simpleChain = new SimpleSequentialChain({
+    chains: [firstChain, secondChain],
+  });
 
-  console.log("Chain output:", result2);
+  // Run the chain: input is fed to firstChain, result flows to secondChain
+  const finalOutput = await simpleChain.run("LangChain helps build AI apps.");
+  console.log("Final output:", finalOutput);
 }
 
-runChain();
+runSimpleSequentialChain();
+
+> When to Use "SimpleSequentialChain"
+1. When you have multiple processing steps that need to run one after another.
+2. Each step takes one input and produces one output.
+3. You want to build a pipeline of tasks, where each task’s output goes as input to the next.
+4. You want to avoid manually calling each step and passing outputs yourself.
+
+`How It Works (Conceptually)`
+
+> If you have two chains:
+
+Chain 1: Takes user input -> generates summary
+Chain 2: Takes summary -> creates a shorter version
+
+`Using SimpleSequentialChain:`
+. You combine Chain 1 and Chain 2 together.
+. When you run the sequential chain with input, it runs Chain 1,
+. Passes its output automatically to Chain 2,
+. Returns the final output from Chain 2.
 ```
 
 ### What is an Agent in LangChain?
