@@ -96,11 +96,11 @@ app.post(
       for (const part of response.candidates[0].content.parts) {
         if (part.inlineData) {
           const imageData = part.inlineData.data;
-          
+
           res.status(200).json({
             success: true,
             imageData: imageData, // Base64 encoded image
-            message: "Image generated successfully"
+            message: "Image generated successfully",
           });
           return;
         }
@@ -109,17 +109,47 @@ app.post(
       // If no image found in response
       res.status(400).json({
         success: false,
-        error: "No image generated"
+        error: "No image generated",
       });
-
     } catch (error) {
       console.error("Error in /api/generate-image:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to generate image"
+        error: "Failed to generate image",
       });
     }
   }
 );
+
+// --- The API Endpoint ---
+app.post("/api/v1/generate-image", async (req, res) => {
+  try {
+    const { prompt } = req.body; // Get the prompt from the frontend's request
+
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required." });
+    }
+
+    console.log(`Generating image for prompt: "${prompt}"`);
+
+    const response = await ai.models.generateImages({
+      model: "imagen-4.0-generate-001",
+      prompt: prompt,
+      config: {
+        numberOfImages: 1,
+        outputMimeType: "image/jpeg",
+        aspectRatio: "1:1",
+      },
+    });
+
+    const base64ImageBytes = response.generatedImages[0].image.imageBytes;
+
+    // Send the image data back to the frontend
+    res.json({ image: base64ImageBytes });
+  } catch (error) {
+    console.error("Error in /api/generate-image:", error);
+    res.status(500).json({ error: "Failed to generate image." });
+  }
+});
 
 app.listen(PORT, () => [console.log(`Server is running on port ${PORT}`)]);
