@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import Header from "../components/Header";
+import Header from "../../components/Header";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 import "./AgentChat.css";
 
 interface Message {

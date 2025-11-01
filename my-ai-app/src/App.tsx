@@ -1,11 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import ChatBot from "./pages/ChatBot";
-import AgentChat from "./pages/AgentChat";
-import ImageClassifier from "./pages/ImageClassifier";
-import TextToSpeech from "./pages/TextToSpeech";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
+import Navbar from "./components/Navbar";
+import ChatBot from "./pages/ChatBot/ChatBot";
+import AgentChat from "./pages/EnhancedAgentChatBox/AgentChat";
+import Home from "./pages/HomePage/Home";
+import ImageClassifier from "./pages/ImageClassifier/ImageClassifier";
+import TextToSpeech from "./pages/TextToSpeech/TextToSpeech";
 
 function App() {
   return (
