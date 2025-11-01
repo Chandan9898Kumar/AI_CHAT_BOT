@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
-import './Navbar.css';
+import { Link, useLocation } from "react-router-dom";
+import "./Navbar.css";
 
 function Navbar() {
   const location = useLocation();
@@ -11,39 +11,57 @@ function Navbar() {
           <span className="logo-icon">🤖</span>
           <span className="logo-text">AI Assistant</span>
         </Link>
-        
+
         <div className="nav-links">
-          <Link 
-            to="/" 
-            className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+          <Link
+            to="/"
+            className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
           >
             <span className="nav-icon">🏠</span>
             Home
           </Link>
-          <Link 
-            to="/chat" 
-            className={`nav-link ${location.pathname === '/chat' ? 'active' : ''}`}
+          <Link
+            to="/chat"
+            className={`nav-link ${
+              location.pathname === "/chat" ? "active" : ""
+            }`}
           >
             <span className="nav-icon">💬</span>
             Chat Bot
           </Link>
-          <Link 
-            to="/agent" 
-            className={`nav-link ${location.pathname === '/agent' ? 'active' : ''}`}
+          <Link
+            to="/agent"
+            className={`nav-link ${
+              location.pathname === "/agent" ? "active" : ""
+            }`}
           >
             <span className="nav-icon">🤖</span>
             AI Agent
           </Link>
-          <Link 
-            to="/classifier" 
-            className={`nav-link ${location.pathname === '/classifier' ? 'active' : ''}`}
+
+          <Link
+            to="/gemini"
+            className={`nav-link ${
+              location.pathname === "/gemini" ? "active" : ""
+            }`}
+          >
+            <span className="nav-icon">🤖</span>
+            Gemini Chat Bot
+          </Link>
+          <Link
+            to="/classifier"
+            className={`nav-link ${
+              location.pathname === "/classifier" ? "active" : ""
+            }`}
           >
             <span className="nav-icon">🖼️</span>
             Image Classifier
           </Link>
-          <Link 
-            to="/tts" 
-            className={`nav-link ${location.pathname === '/tts' ? 'active' : ''}`}
+          <Link
+            to="/tts"
+            className={`nav-link ${
+              location.pathname === "/tts" ? "active" : ""
+            }`}
           >
             <span className="nav-icon">🔊</span>
             Text to Speech
