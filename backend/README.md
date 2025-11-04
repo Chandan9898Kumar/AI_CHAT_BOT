@@ -2128,6 +2128,7 @@ function buildPrompt(userRequest, retrievedData) {
 
 > Key Point: RAG is a pattern/technique that can enhance ANY AI application that needs specific context or data. It's not limited to chatbots - it's about making AI responses more accurate and relevant by providing the right information!
 
+
 ## 📝 License
 
 MIT License - feel free to use this code for your projects!
