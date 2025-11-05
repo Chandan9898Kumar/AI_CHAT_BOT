@@ -121,7 +121,7 @@ app.post(
   }
 );
 
-// --- The API Endpoint ---
+
 app.post("/api/v1/generate-image", async (req, res) => {
   try {
     const { prompt } = req.body; // Get the prompt from the frontend's request
