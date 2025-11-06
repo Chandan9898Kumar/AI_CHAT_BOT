@@ -144,7 +144,7 @@ app.post("/api/v1/generate-image", async (req, res) => {
 
     const base64ImageBytes = response.generatedImages[0].image.imageBytes;
 
-    // Send the image data back to the frontend
+    // Send the image data back to the frontend.
     res.json({ image: base64ImageBytes });
   } catch (error) {
     console.error("Error in /api/generate-image:", error);
