@@ -14,6 +14,8 @@ const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
 
+// Works only if: You click directly on the button element
+// Fails if: You click on child elements inside the button
 const handleMessageAction = (event: React.MouseEvent) => {
   const button = event.target as HTMLButtonElement;
   const text = button.dataset.text;
@@ -21,6 +23,48 @@ const handleMessageAction = (event: React.MouseEvent) => {
     copyToClipboard(text);
   }
 };
+
+//                      OR
+
+// Works if: You click anywhere inside the button or its children
+// Traverses up: DOM tree to find the nearest element with data-text
+
+// const handleMessageAction = (event: React.MouseEvent) => {
+//   const button =  (event.target as Element).closest('[data-text]') as HTMLButtonElement;
+//   if (button?.classList.contains("copy-btn")) {
+//     copyToClipboard(button.dataset.text!);
+//   }
+// };
+
+/**
+
+// Your current button structure:
+<button className="copy-btn" data-text={message.text}>
+  📋  {/* If you click this emoji 
+</button>
+
+// What if you had this structure:
+<button className="copy-btn" data-text={message.text}>
+  <span>📋</span>  //  Now this is an element 
+  <span>Copy</span> // Another element 
+</button>
+
+So,
+Click on <span> or <button>:
+
+event.target.dataset = {} (empty) ❌
+event.target.closest('.item') = finds parent <li> ✅
+
+
+Scenario 1: Click on <span>📋</span>
+Approach 1: event.target = <span> → No data-text → FAILS
+Approach 2: closest('[data-text]') finds <button> → WORKS
+
+
+Scenario 2: Click directly on <button>
+
+Both approaches work
+ */
 
 const GeminiChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -135,6 +179,5 @@ const GeminiChatBot = () => {
     </div>
   );
 };
-
 
 export default GeminiChatBot;
