@@ -136,4 +136,5 @@ const GeminiChatBot = () => {
   );
 };
 
+
 export default GeminiChatBot;
