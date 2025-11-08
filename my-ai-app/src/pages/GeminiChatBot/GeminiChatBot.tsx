@@ -63,7 +63,7 @@ Approach 2: closest('[data-text]') finds <button> → WORKS
 
 Scenario 2: Click directly on <button>
 
-Both approaches work
+Both approaches work.
  */
 
 const GeminiChatBot = () => {
