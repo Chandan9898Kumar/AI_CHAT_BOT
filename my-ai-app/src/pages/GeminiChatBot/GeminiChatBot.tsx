@@ -179,4 +179,5 @@ const GeminiChatBot = () => {
     </div>
   );
 };
+
 export default GeminiChatBot;
