@@ -120,7 +120,6 @@ const GeminiChatBot = () => {
   return (
     <div className="app">
       <Header />
-
       <div className="main-content">
         {messages.length === 0 ? (
           <Message />
