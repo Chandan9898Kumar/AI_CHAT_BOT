@@ -3,11 +3,11 @@ import { GoogleGenAI } from "@google/genai";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { body, validationResult } from "express-validator";
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
-import { body, validationResult } from "express-validator";
 app.use(cors());
 app.use(express.json());
 
