@@ -60,6 +60,8 @@ app.post(
     }
   }
 );
+
+
 // Text-to-Image generation endpoint
 app.post(
   "/api/generate-image",
