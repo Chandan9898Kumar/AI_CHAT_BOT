@@ -2,7 +2,6 @@ import { useState } from "react";
 import Header from "../../components/Header";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-
 interface Message {
   id: string;
   text: string;
